@@ -1,0 +1,16 @@
+click==7.1.2
+cltk==0.1.121
+gitdb==4.0.5
+GitPython==3.1.13
+joblib==1.0.1
+nltk==3.5
+pdf2image==1.14.0
+python-crfsuite==0.9.7
+pyuca==1.2
+PyYAML==5.4.1
+pytesseract==0.3.7
+regex==2020.11.13
+smmap==3.0.5
+tqdm==4.56.2
+Whoosh==2.7.4
+wordcloud==1.8.1
