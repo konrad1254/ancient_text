@@ -1,0 +1,28 @@
+from setuptools import setup
+
+setup(name='ancient_text',
+version='0.1',
+description='Testing installation of Package',
+url='#',
+author='Konrad Eilers',
+author_email='konrad_eilers@hotmail.de',
+license='MIT',
+packages=['ancient_text'],
+install_requires=[
+			'click',
+			'cltk',
+			'gitdb',
+			'GitPython',
+			'joblib',
+			'nltk',
+			'pdf2image',
+			'python-crfsuite',
+			'pyuca',
+			'PyYAML',
+			'pytesseract',
+			'regex',
+			'smmap',
+			'tqdm',
+			'Whoosh',
+			'wordcloud'],
+zip_safe=False)
