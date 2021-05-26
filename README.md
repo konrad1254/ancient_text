@@ -36,4 +36,31 @@ Arguments:
 - name under which .png is saved. The location corresponds to cwd.
 
 ## LDA with Genetic Programming
+Topic modelling can be conducted in the following way:
+```python
+from ancient_text import genetic_programming
+genetic_algorithm = genetic_programming.Genetic(data = data, 
+                                                numberOfParents = 5, 
+                                                generations = 5, 
+                                                no_of_cr = 2, 
+                                                childSize = 4, 
+                                                prob_of_mutation = 0.1, 
+                                                lambda_fitness = 100, 
+                                                num_topics_bounds = (2,7), 
+                                                alpha_choice=['symmetric', None, 'asymmetric'], 
+                                                eta_optimize = False)
+
+model, return_dict, model_corpus, num_topics, tracker_output = genetic_algorithm.fit()
+```
+Arguments:
+- data: either list of tokens or dictionary with values of list of tokens
+- numberOfParents / generations / no_of_cr / childSize / prob_of_mutation: genetic programming parameters
+- lambda_fitness: weight of stability factor
+- num_topics_bounds: (min,max) of number of topic bounds
+- alpha_choice: choices of alpha hyperparameter
+- eta_optimize: choice if eta should be optimized or not 
+
+Output: most importantly model artifact
+
+
 
