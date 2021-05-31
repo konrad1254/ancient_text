@@ -2,6 +2,7 @@ import pytesseract
 from pdf2image import convert_from_path
 import glob
 import os
+import re
 from ancient_text import utils
 
 def magic_converter(document, path_to_save_text):
