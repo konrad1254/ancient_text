@@ -37,7 +37,7 @@ def return_language_detection(string):
         string, returnVectors=True)
     return vectors
 
-def language_extraction(string_input):
+def language_extraction(string_input, language):
     return_list = []
 
     r = return_language_detection(string_input)
