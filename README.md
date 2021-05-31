@@ -32,7 +32,7 @@ def natural_keys(text):
 
 sorted_files = sorted(files, key = natural_keys)
 raw_text = utils.string_conversion(sorted_files)
-utils.cleaning_pdf_output(raw_text)
+text = utils.cleaning_pdf_output(raw_text)
 ```
 The package extracts the PDF file into raw txt files per page. Then, the files are ordered and loaded into the python environment. 
 Lastly, the files are converted and rudimentarily cleaned.
