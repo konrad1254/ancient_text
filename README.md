@@ -43,7 +43,7 @@ The following returns the Latin pieces in the text.
 
 ```python
 from ancient_text import utils
-utils.language_extraction(text)
+data = utils.language_extraction(text, language = 'LATIN')
 ```
 
 ## Cleaning Data
