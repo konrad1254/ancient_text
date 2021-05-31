@@ -38,11 +38,12 @@ The package extracts the PDF file into raw txt files per page. Then, the files a
 Lastly, the files are converted and rudimentarily cleaned.
 
 ## Language Extraction
-So far, the package supports topic modelling for Latin. 
+So far, the package supports topic modelling for Latin.
+The following returns the Latin pieces in the text.
 
 ```python
 from ancient_text import utils
-language_extraction(text)
+utils.language_extraction(text)
 ```
 
 ## Cleaning Data
