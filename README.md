@@ -8,9 +8,35 @@ The topic model is based on a combination of genetic programming and Latent Diri
 ```bash
 pip3 install git+https://github.com/konrad1254/ancient_text@main
 ```
+Note that there are quite a few external dependencies; this might take a while.
+
 ## Reading Data
-- reading data from pdf
-- collecting a Latin-only text
+Reading complicated, non-machine readable text data is made easy.
+
+```python
+import re
+from ancient_text import utils
+from ancient_text import reading_data
+
+path = '/Users/konrad/Documents/test'
+document = '/Users/konrad/Documents/test/roll_extract.pdf'
+
+data = reading_data.magic_converter(document, path)
+files = utils.find_txt_filenames(path)
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+def natural_keys(text):
+    return [atoi(c) for c in re.split(r'(\d+)', text)]
+
+sorted_files = sorted(files, key = natural_keys)
+raw_text = utils.string_conversion(sorted_files)
+utils.cleaning_pdf_output(raw_text)
+```
+The package extracts the PDF file into raw txt files per page. Then, the files are ordered and loaded into the python environment. 
+Lastly, the files are converted and rudimentarily cleaned.
+
 
 ## Cleaning Data
 The package supports text cleaning. Taking a list of tokens, the cleaning objects removes digits, punctuation, stop words as well as pre-specified words.
