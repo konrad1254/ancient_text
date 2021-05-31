@@ -37,6 +37,13 @@ utils.cleaning_pdf_output(raw_text)
 The package extracts the PDF file into raw txt files per page. Then, the files are ordered and loaded into the python environment. 
 Lastly, the files are converted and rudimentarily cleaned.
 
+## Language Extraction
+So far, the package supports topic modelling for Latin. 
+
+```python
+from ancient_text import utils
+language_extraction(text)
+```
 
 ## Cleaning Data
 The package supports text cleaning. Taking a list of tokens, the cleaning objects removes digits, punctuation, stop words as well as pre-specified words.
@@ -46,6 +53,9 @@ Given a list of tokens, the cleaning is conducted in the following way:
 
 ```python
 from ancient_text import pre_processing
+from ancient_text import utils
+utils.get_corpora()
+
 pre = pre_processing.Preprocessor(tokens = data, remove_list = [], lemmatize = True)
 data = pre.cleaning()
 ```
