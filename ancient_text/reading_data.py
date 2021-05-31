@@ -2,8 +2,7 @@ import pytesseract
 from pdf2image import convert_from_path
 import glob
 import os
-from utils import string_conversion
-from utils import find_txt_filenames
+from ancient_text import utils
 
 def magic_converter(document, path_to_save_text):
 
@@ -28,7 +27,7 @@ def natural_keys(text):
     return [atoi(c) for c in re.split(r'(\d+)', text)]
 
 def load_text(path):
-	files = find_txt_filenames(path)
+	files = utils.find_txt_filenames(path)
 	sorted_files = sorted(files, key = natural_keys)
-	data = string_conversion(sorted_files)
+	data = utils.string_conversion(sorted_files)
 	return data
