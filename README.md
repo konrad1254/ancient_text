@@ -1,5 +1,8 @@
 # Ancient Text
-Repository for NLP analysis of ancient text
+This is a repository supporting NLP research in ancient texts. 
+The repo supports reading, cleaning, vizualisation and modelling of textual data.
+
+The topic model is based on a combination of genetic programming and Latent Dirichlet allocation.
 
 ## Installation & Setup 
 ```bash
