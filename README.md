@@ -57,7 +57,7 @@ from ancient_text import pre_processing
 from ancient_text import utils
 utils.get_corpora()
 
-pre = pre_processing.Preprocessor(tokens = data, remove_list = [], lemmatize = True)
+pre = pre_processing.Preprocessor(tokens = data.split(), remove_list = [], lemmatize = True)
 data = pre.cleaning()
 ```
 Arguments:
