@@ -15,7 +15,7 @@ class Genetic:
     Class that produces genetic programming optimization for LDA
     """
 
-    def __init__(self, data, numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True):
+    def __init__(self, data, bounds,numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True):
         self.data = data
         self.numberOfParents = numberOfParents
         self.model = None
@@ -48,6 +48,8 @@ class Genetic:
         self.childSize = childSize 
         self.prob_of_mutation = prob_of_mutation
         self.lambda_val = lambda_fitness
+
+        self.bounds = bounds
 
 
     def initalize(self, num_of_words):
@@ -111,14 +113,14 @@ class Genetic:
             raise NotImplementedError
 
         dictionary = Dictionary(text)
-        #dictionary.filter_extremes(no_below=3, no_above=0.7)
+        dictionary.filter_extremes(no_below=self.bounds[0], no_above=self.bounds[1])
         ldacorpus = [dictionary.doc2bow(i) for i in text]
         tfidfmodel = TfidfModel(ldacorpus)
         model_corpus = tfidfmodel[ldacorpus]
 
         # In-sample
         dictionary_in_s = Dictionary(in_sample)
-        #dictionary_in_s.filter_extremes(no_below=3, no_above=0.7)
+        dictionary_in_s.filter_extremes(no_below=3, no_above=0.7)
         ldacorpus_is = [dictionary_in_s.doc2bow(i) for i in text]
         tfidfmodel_is = TfidfModel(ldacorpus_is)
         model_corpus_is = tfidfmodel_is[ldacorpus_is]
