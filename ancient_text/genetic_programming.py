@@ -15,7 +15,7 @@ class Genetic:
     Class that produces genetic programming optimization for LDA
     """
 
-    def __init__(self, data, bounds,numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True):
+    def __init__(self, data,numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True):
         self.data = data
         self.numberOfParents = numberOfParents
         self.model = None
@@ -49,7 +49,6 @@ class Genetic:
         self.prob_of_mutation = prob_of_mutation
         self.lambda_val = lambda_fitness
 
-        self.bounds = bounds
 
 
     def initalize(self, num_of_words):
@@ -113,7 +112,7 @@ class Genetic:
             raise NotImplementedError
 
         dictionary = Dictionary(text)
-        dictionary.filter_extremes(no_below=self.bounds[0], no_above=self.bounds[1])
+        dictionary.filter_extremes(no_below=3, no_above=0.7)
         ldacorpus = [dictionary.doc2bow(i) for i in text]
         tfidfmodel = TfidfModel(ldacorpus)
         model_corpus = tfidfmodel[ldacorpus]
