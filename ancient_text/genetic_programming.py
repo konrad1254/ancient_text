@@ -126,6 +126,7 @@ class Genetic:
 
         return_dict['model_corpus'] = model_corpus
         return_dict['model_corpus_is'] = model_corpus_is
+        return_dict['dictionary_is'] = dictionary_in_s
         return_dict['dictionary'] = dictionary
         return_dict['in_sample'] = in_sample
         return_dict['out_of_sample'] = out_of_sample
@@ -254,7 +255,7 @@ class Genetic:
 
             result = (eta,alpha,num_topics,decay,offset)
             
-            model = LdaModel(corpus = prepared_data['model_corpus_is'], id2word = prepared_data['dictionary'],
+            model = LdaModel(corpus = prepared_data['model_corpus'], id2word = prepared_data['dictionary'],
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
@@ -264,7 +265,7 @@ class Genetic:
             score.append(fitness)
             counter_ident += 1
 
-        return result_dict, prepared_data['model_corpus_is'],  prepared_data['dictionary'], prepared_data['out_of_sample'], score
+        return result_dict, prepared_data['model_corpus'],  prepared_data['dictionary'], prepared_data['out_of_sample'], score
 
     def crossover_uniform(self, result_dict, no_of_cr, childSize, score):
         '''
@@ -399,11 +400,11 @@ class Genetic:
     def lda_stability_test(self, num_topics, eta, alpha, decay, offset, random_state): 
         prepared_data = self.data_prep()
 
-        model = LdaModel(corpus = prepared_data['model_corpus_is'], id2word = prepared_data['dictionary'], 
+        model = LdaModel(corpus = prepared_data['model_corpus'], id2word = prepared_data['dictionary'], 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
         
-        topic_corpus = model[prepared_data['model_corpus_is']]
+        topic_corpus = model[prepared_data['model_corpus']]
 
         return model, topic_corpus
 
