@@ -383,7 +383,7 @@ class Genetic:
         offset = metrics[4]
 
         print(f'Parameters: #topics: {num_topics}')
-        print(f'Parameters: decay: {decay[0]}')
+        print(f'Parameters: decay: {decay}')
         print(f'Parameters: offset: {offset}')
         print(f'Parameters: alpha: {alpha}')
 
