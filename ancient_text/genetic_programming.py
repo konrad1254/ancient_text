@@ -199,8 +199,8 @@ class Genetic:
                 self.num_topics = self.num_topics + stochastic_val_topic
 
             if self.eta_optimize == True:
-                self.mu_eta[i] = self.mu_eta[i] + np.random.normal(0,1,1)
-                stochastic_pert_sigma = np.random.normal(0,1,1)
+                self.mu_eta[i] = self.mu_eta[i] + np.random.normal(0,0.1,1)
+                stochastic_pert_sigma = np.random.normal(0,0.1,1)
                 if self.sigma_eta[i] + stochastic_pert_sigma > 0:
                     self.sigma_eta[i] = self.sigma_eta[i] + stochastic_pert_sigma
             
