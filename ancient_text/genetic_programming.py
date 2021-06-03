@@ -93,7 +93,7 @@ class Genetic:
 
         if isinstance(self.data, dict):
 
-            out_of_sample_keys = np.random.choice(list(data.keys()), int(round(0.2*len(data.keys()))))
+            out_of_sample_keys = np.random.choice(list(self.data.keys()), int(round(0.2*len(self.data.keys()))))
 
             for k in self.data.keys():
                 text.append(self.data[k]) 
