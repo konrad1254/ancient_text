@@ -96,25 +96,16 @@ class Genetic:
             out_of_sample_keys = np.random.choice(list(self.data.keys()), int(round(0.2*len(self.data.keys()))))
 
             for k in self.data.keys():
-                text.append([[i] for i in self.data[k]]) 
+                text.append(self.data[k]) 
                 if k in out_of_sample_keys:
-                    out_of_sample.append([[i] for i in self.data[k]])
+                    out_of_sample.append(self.data[k])
                 else:
-                    in_sample.append([[i] for i in self.data[k]])
-
-            text = [item for sublist in text for item in sublist]
-            in_sample = [item for sublist in in_sample for item in sublist]
-            out_of_sample = [item for sublist in out_of_sample for item in sublist]
-
+                    in_sample.append(self.data[k])
 
         elif isinstance(self.data, list):
             cut_off = int(round(0.8*len(self.data)))
             out_of_sample = text[cut_off:]
             in_sample = text[:cut_off]
-
-            text = [[i] for i in self.data]
-            out_of_sample = [[i] for i in out_of_sample]
-            in_sample = [[i] for i in in_sample]
 
         else:
             raise NotImplementedError
