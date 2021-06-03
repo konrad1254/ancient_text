@@ -93,7 +93,7 @@ class Genetic:
 
         if isinstance(self.data, dict):
 
-            out_of_sample_keys = np.random.choice(len(self.data.keys()), int(round(0.2*len(self.data.keys()))))
+            out_of_sample_keys = np.random.choice(list(data.keys()), int(round(0.2*len(data.keys()))))
 
             for k in self.data.keys():
                 text.append(self.data[k]) 
@@ -103,7 +103,6 @@ class Genetic:
                     in_sample.append(self.data[k])
 
         elif isinstance(self.data, list):
-            text = [d.split() for d in self.data]
             cut_off = int(round(0.8*len(text)))
             out_of_sample = text[cut_off:]
             in_sample = text[:cut_off]
