@@ -96,32 +96,37 @@ class Genetic:
             out_of_sample_keys = np.random.choice(list(self.data.keys()), int(round(0.2*len(self.data.keys()))))
 
             for k in self.data.keys():
-                text.append(self.data[k]) 
+                text.append([[i] for i in self.data[k]]) 
                 if k in out_of_sample_keys:
-                    out_of_sample.append(self.data[k])
+                    out_of_sample.append([[i] for i in self.data[k]])
                 else:
-                    in_sample.append(self.data[k])
+                    in_sample.append([[i] for i in self.data[k]])
 
             text = [item for sublist in text for item in sublist]
-
+            in_sample = [item for sublist in in_sample for item in sublist]
+            out_of_sample = [item for sublist in out_of_sample for item in sublist]
 
 
         elif isinstance(self.data, list):
-            cut_off = int(round(0.8*len(text)))
+            cut_off = int(round(0.8*len(self.data)))
             out_of_sample = text[cut_off:]
             in_sample = text[:cut_off]
+
+            text = [[i] for i in self.data]
+            out_of_sample = [[i] for i in out_of_sample]
+            in_sample = [[i] for i in in_sample]
 
         else:
             raise NotImplementedError
 
-        dictionary = Dictionary([text])
+        dictionary = Dictionary(text)
         dictionary.filter_extremes(no_below=3, no_above=0.7)
         ldacorpus = [dictionary.doc2bow(i) for i in text]
         tfidfmodel = TfidfModel(ldacorpus)
         model_corpus = tfidfmodel[ldacorpus]
 
         # In-sample
-        dictionary_in_s = Dictionary([in_sample])
+        dictionary_in_s = Dictionary(in_sample)
         dictionary_in_s.filter_extremes(no_below=3, no_above=0.7)
         ldacorpus_is = [dictionary_in_s.doc2bow(i) for i in text]
         tfidfmodel_is = TfidfModel(ldacorpus_is)
