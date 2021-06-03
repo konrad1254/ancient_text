@@ -104,6 +104,8 @@ class Genetic:
 
             text = [item for sublist in text for item in sublist]
 
+
+
         elif isinstance(self.data, list):
             cut_off = int(round(0.8*len(text)))
             out_of_sample = text[cut_off:]
@@ -112,14 +114,14 @@ class Genetic:
         else:
             raise NotImplementedError
 
-        dictionary = Dictionary(text)
+        dictionary = Dictionary([text])
         dictionary.filter_extremes(no_below=3, no_above=0.7)
         ldacorpus = [dictionary.doc2bow(i) for i in text]
         tfidfmodel = TfidfModel(ldacorpus)
         model_corpus = tfidfmodel[ldacorpus]
 
         # In-sample
-        dictionary_in_s = Dictionary(in_sample)
+        dictionary_in_s = Dictionary([in_sample])
         dictionary_in_s.filter_extremes(no_below=3, no_above=0.7)
         ldacorpus_is = [dictionary_in_s.doc2bow(i) for i in text]
         tfidfmodel_is = TfidfModel(ldacorpus_is)
