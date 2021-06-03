@@ -200,15 +200,15 @@ class Genetic:
                 self.num_topics = self.num_topics + stochastic_val_topic
 
             if self.eta_optimize == True:
-                self.mu_eta[i] = self.mu_eta[i] + np.random.normal(0,0.05,1)
-                stochastic_pert_sigma = np.random.normal(0,0.05,1)
+                self.mu_eta[i] = self.mu_eta[i] + np.random.normal(0,1,1)
+                stochastic_pert_sigma = np.random.normal(0,1,1)
                 if self.sigma_eta[i] + stochastic_pert_sigma > 0:
                     self.sigma_eta[i] = self.sigma_eta[i] + stochastic_pert_sigma
             
                 parameter_eta = np.random.lognormal(self.mu_eta[i], self.sigma_eta[i], num_of_words).T
                 self.eta[:,i] = np.random.dirichlet((parameter_eta), 1)
 
-            stochastic_pert_decay = np.random.normal(0,0.05,1)
+            stochastic_pert_decay = np.random.normal(0,0.1,1)
             if (self.decay[i] + stochastic_pert_decay > 0) and (self.decay[i] + stochastic_pert_decay < 0.99):
                 self.decay[i] = self.decay[i] + stochastic_pert_decay
 
