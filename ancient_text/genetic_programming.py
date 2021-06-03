@@ -102,6 +102,8 @@ class Genetic:
                 else:
                     in_sample.append(self.data[k])
 
+            text = [item for sublist in text for item in sublist]
+
         elif isinstance(self.data, list):
             cut_off = int(round(0.8*len(text)))
             out_of_sample = text[cut_off:]
