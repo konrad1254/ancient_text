@@ -106,6 +106,7 @@ class Genetic:
             cut_off = int(round(0.8*len(self.data)))
             out_of_sample = text[cut_off:]
             in_sample = text[:cut_off]
+            text = self.data
 
         else:
             raise NotImplementedError
