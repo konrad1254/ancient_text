@@ -118,18 +118,23 @@ class Genetic:
         return_dict['out_of_sample_keys'] = out_of_sample_keys
         return_dict['out_of_sample'] = out_of_sample
 
-        print([type(i) for i in return_dict.values()])
-
         return return_dict
 
-    def stability_score(self, num_topics, eta, alpha, decay, offset):
+    def stability_score(self, out_of_sample, dictionary, num_topics, eta, alpha, decay, offset):
 
         n = 10 # number of stability tests
         i = 0
         store_topic_list_of_list = []
         for i in range(n):
             random_state = i
-            model, topic_corpus = self.lda_stability_test(num_topics, eta, alpha, decay, offset, random_state = random_state)    
+            model, topic_corpus = self.lda_stability_test(out_of_sample = out_of_sample, 
+                                                          dictionary = dictionary, 
+                                                          num_topics = num_topics, 
+                                                          eta = eta, 
+                                                          alpha = alpha, 
+                                                          decay = decay, 
+                                                          offset = offset, 
+                                                          random_state = random_state)    
 
             # get the topic descritions
             topic_sep = re.compile(r"0\.[0-9]{3}\*") # getting rid of useless formatting
@@ -173,7 +178,7 @@ class Genetic:
                                           coherence='u_mass')
 
         umass_score = coherencemodel_umass.get_coherence()
-        stability = self.stability_score(num_topics, eta, alpha, decay, offset)
+        stability = self.stability_score(out_of_sample, dictionary, num_topics, eta, alpha, decay, offset)
 
         return umass_score + lambda_parameter*stability
     
@@ -391,10 +396,9 @@ class Genetic:
         prepared_data = self.data_prep()
         return prepared_data
 
-    def lda_stability_test(self, num_topics, eta, alpha, decay, offset, random_state): 
-        prepared_data = self.data_prep()
+    def lda_stability_test(self, out_of_sample, dictionary, num_topics, eta, alpha, decay, offset): 
 
-        model = LdaModel(corpus = prepared_data['model_corpus'], id2word = prepared_data['dictionary'], 
+        model = LdaModel(corpus = out_of_sample, id2word = dictionary, 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
         
