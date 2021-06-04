@@ -92,7 +92,6 @@ class Genetic:
         text = []
         out_of_sample = []
         in_sample = []
-        iterator =  0
 
 
         if isinstance(self.data, dict):
@@ -101,10 +100,8 @@ class Genetic:
 
             for k in self.data.keys():
                 text.append(self.data[k]) 
-                if iterator in out_of_sample_keys:
+                if k in out_of_sample_keys:
                     out_of_sample.append(self.data[k])
-                iterator += 1
-
         else:
             raise NotImplementedError
 
