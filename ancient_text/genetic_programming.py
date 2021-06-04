@@ -23,7 +23,7 @@ class Genetic:
         
         # Parameters
         self.model_corpus = []
-        self.dictionary = None
+        self.dictionary = []
         
 
         # Hyperparameters to tune
@@ -209,6 +209,8 @@ class Genetic:
         population['alpha'] = self.alpha
         population['decay'] = self.decay
         population['offset'] = self.offset
+
+        print(type(self.dictionary))
 
         return population
     
