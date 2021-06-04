@@ -120,14 +120,14 @@ class Genetic:
 
         return return_dict
 
-    def stability_score(self, out_of_sample, dictionary, num_topics, eta, alpha, decay, offset):
+    def stability_score(self, dictionary, num_topics, eta, alpha, decay, offset):
 
         n = 10 # number of stability tests
         i = 0
         store_topic_list_of_list = []
         for i in range(n):
-            random_state = 10
-            model, topic_corpus = self.lda_stability_test(out_of_sample = out_of_sample, 
+            random_state = i
+            model, topic_corpus = self.lda_stability_test(
                                                           dictionary = dictionary, 
                                                           num_topics = num_topics, 
                                                           eta = eta, 
@@ -178,7 +178,7 @@ class Genetic:
                                           coherence='u_mass')
 
         umass_score = coherencemodel_umass.get_coherence()
-        stability = self.stability_score(out_of_sample, dictionary, num_topics, eta, alpha, decay, offset)
+        stability = self.stability_score(dictionary, num_topics, eta, alpha, decay, offset)
 
         return umass_score + lambda_parameter*stability
     
@@ -396,10 +396,8 @@ class Genetic:
         prepared_data = self.data_prep()
         return prepared_data
 
-    def lda_stability_test(self, out_of_sample, dictionary, num_topics, eta, alpha, decay, offset, random_state): 
+    def lda_stability_test(self, dictionary, num_topics, eta, alpha, decay, offset, random_state): 
 
-        prepared_data = self.data_prep()
-        
         model = LdaModel(corpus = prepared_data['model_corpus'], id2word = dictionary, 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
