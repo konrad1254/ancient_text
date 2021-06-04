@@ -17,7 +17,7 @@ class Genetic:
 
     def __init__(self, data,numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True):
         
-        print('version 0.3')
+
         self.data = data
         self.numberOfParents = numberOfParents
         self.model = None
@@ -117,6 +117,8 @@ class Genetic:
         return_dict['dictionary'] = dictionary
         return_dict['out_of_sample_keys'] = out_of_sample_keys
         return_dict['out_of_sample'] = out_of_sample
+
+        prirnt([type(i) for i in return_dict.values()])
 
         return return_dict
 
@@ -379,7 +381,7 @@ class Genetic:
         print(f'Parameters: offset: {offset}')
         print(f'Parameters: alpha: {alpha}')
 
-        model = LdaModel(corpus = self.model_corpus, id2word = prepared_data['dictionary'],
+        model = LdaModel(corpus = prepared_data['model_corpus'], id2word = prepared_data['dictionary'],
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                          iterations = 1000, random_state = 42)
 
@@ -392,7 +394,7 @@ class Genetic:
     def lda_stability_test(self, num_topics, eta, alpha, decay, offset, random_state): 
         prepared_data = self.data_prep()
 
-        model = LdaModel(corpus = self.model_corpus, id2word = prepared_data['dictionary'], 
+        model = LdaModel(corpus = prepared_data['model_corpus'], id2word = prepared_data['dictionary'], 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
         
