@@ -398,17 +398,12 @@ class Genetic:
 
     def lda_stability_test(self, out_of_sample, dictionary, num_topics, eta, alpha, decay, offset, random_state): 
 
-        print(out_of_sample)
-        print(dictionary)
-        print(num_topics)
-        print(eta)
-        print(alpha)
-        print(offset)
-        print(random_state)
-
-        model = LdaModel(corpus = out_of_sample, id2word = dictionary, 
+        prepared_data = self.data_prep()
+        
+        model = LdaModel(corpus = prepared_data['model_corpus'], id2word = dictionary, 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
+
         topic_corpus = model[self.model_corpus]
         return model, topic_corpus
 
