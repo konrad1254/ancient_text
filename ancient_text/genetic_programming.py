@@ -336,7 +336,7 @@ class Genetic:
         """
         result, corpus_training, prepared_data, score = self.train_population(generation)
         children_dict = self.crossover_uniform(result, self.no_of_cr, self.childSize, score)
-        children = self.mutation(children_dict, self.prob_of_mutation, dictionary)
+        children = self.mutation(children_dict, self.prob_of_mutation, prepared_data['dictionary'])
 
         output = dict()
 
