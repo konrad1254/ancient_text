@@ -401,8 +401,8 @@ class Genetic:
         model = LdaModel(corpus = out_of_sample, id2word = dictionary, 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
-        
-        return model
+        topic_corpus = model[self.model_corpus]
+        return model, topic_corpus
 
 
 
