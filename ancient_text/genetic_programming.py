@@ -126,7 +126,7 @@ class Genetic:
         i = 0
         store_topic_list_of_list = []
         for i in range(n):
-            random_state = i
+            random_state = 10
             model, topic_corpus = self.lda_stability_test(out_of_sample = out_of_sample, 
                                                           dictionary = dictionary, 
                                                           num_topics = num_topics, 
