@@ -393,6 +393,7 @@ class Genetic:
         return prepared_data
 
     def lda_stability_test(self, num_topics, eta, alpha, decay, offset, random_state): 
+        prepared_data = self.data_prep()
 
         model = LdaModel(corpus = self.model_corpus, id2word = self.dictionary, 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
