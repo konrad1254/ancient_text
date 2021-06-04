@@ -16,6 +16,8 @@ class Genetic:
     """
 
     def __init__(self, data,numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True):
+        
+        print('version 0.3')
         self.data = data
         self.numberOfParents = numberOfParents
         self.model = None
@@ -23,9 +25,7 @@ class Genetic:
         
         # Parameters
         self.model_corpus = []
-        self.dictionary = []
         
-
         # Hyperparameters to tune
         self.num_topics = np.empty([self.numberOfParents, 1])
         self.num_topic_min = num_topics_bounds[0]
@@ -112,7 +112,6 @@ class Genetic:
         tfidfmodel = TfidfModel(ldacorpus)
         model_corpus = tfidfmodel[ldacorpus]
         self.model_corpus = model_corpus
-        self.dictionary = dictionary
 
         return_dict['model_corpus'] = model_corpus
         return_dict['dictionary'] = dictionary
@@ -210,8 +209,6 @@ class Genetic:
         population['decay'] = self.decay
         population['offset'] = self.offset
 
-        print(type(self.dictionary))
-
         return population
     
 
@@ -250,13 +247,13 @@ class Genetic:
 
             result = (eta,alpha,num_topics,decay,offset)
             
-            model = LdaModel(corpus = corpus_training, id2word = self.dictionary,
+            model = LdaModel(corpus = corpus_training, id2word = prepared_data['dictionary'],
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
             result_dict[identifier] = result
 
-            fitness = self.fitenss(self.dictionary, prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)
+            fitness = self.fitenss(prepared_data['dictionary'], prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)
             score.append(fitness)
             counter_ident += 1
 
@@ -345,13 +342,13 @@ class Genetic:
 
             result = (eta,alpha,num_topics, decay, offset)
 
-            model = LdaModel(corpus = corpus_training, id2word = self.dictionary,
+            model = LdaModel(corpus = corpus_training, id2word = prepared_data['dictionary'],
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
             output[self.fitenss(self.dictionary, prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)] = result
 
-        return output
+        return output, prepared_data
 
     def fit(self):
         """
@@ -361,7 +358,7 @@ class Genetic:
         tracker_output = dict()
         for i in range(self.generations):
             print(f"Fitting generation: {i}")
-            output = self.genetic_programming(i)
+            output, prepared_data = self.genetic_programming(i)
             
             return_values[max(output.items(), key=lambda x: x[0])[0]] = max(output.items(), key=lambda x: x[0])[1]
             tracker_output[i] = output
@@ -382,7 +379,7 @@ class Genetic:
         print(f'Parameters: offset: {offset}')
         print(f'Parameters: alpha: {alpha}')
 
-        model = LdaModel(corpus = self.model_corpus, id2word = self.dictionary,
+        model = LdaModel(corpus = self.model_corpus, id2word = prepared_data['dictionary'],
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                          iterations = 1000, random_state = 42)
 
@@ -395,7 +392,7 @@ class Genetic:
     def lda_stability_test(self, num_topics, eta, alpha, decay, offset, random_state): 
         prepared_data = self.data_prep()
 
-        model = LdaModel(corpus = self.model_corpus, id2word = self.dictionary, 
+        model = LdaModel(corpus = self.model_corpus, id2word = prepared_data['dictionary'], 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
         
