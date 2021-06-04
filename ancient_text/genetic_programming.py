@@ -101,10 +101,10 @@ class Genetic:
 
             for k in self.data.keys():
                 text.append(self.data[k]) 
-                if k in out_of_sample_keys:
+                if iterator in out_of_sample_keys:
                     out_of_sample.append(self.data[k])
-                else:
-                    in_sample.append(self.data[k])
+                iterator += 1
+
         else:
             raise NotImplementedError
 
@@ -117,22 +117,9 @@ class Genetic:
         self.model_corpus = model_corpus
         self.dictionary = dictionary
 
-        # In-sample
-        dictionary_in_s = Dictionary(in_sample)
-        dictionary_in_s.filter_extremes(no_below=3, no_above=0.7)
-        ldacorpus_is = [dictionary_in_s.doc2bow(i) for i in text]
-        tfidfmodel_is = TfidfModel(ldacorpus_is)
-        model_corpus_is = tfidfmodel_is[ldacorpus_is]
-
-        # Out of sample
-        dictionary_out_s = Dictionary(out_of_sample)
-
         return_dict['model_corpus'] = model_corpus
-        return_dict['model_corpus_is'] = model_corpus_is
-        return_dict['dictionary_is'] = dictionary_in_s
-        return_dict['dictionary_o'] = dictionary_out_s
         return_dict['dictionary'] = dictionary
-        return_dict['in_sample'] = in_sample
+        return_dict['out_of_sample_keys'] = out_of_sample_keys
         return_dict['out_of_sample'] = out_of_sample
 
         return return_dict
@@ -241,6 +228,11 @@ class Genetic:
         else:
             population = self.genetic_stochastic_movement(len(prepared_data['dictionary']))
 
+        corpus_training = []
+        for i in range(len(self.data.keys())):
+            if i not in prepared_data['out_of_sample_keys']:
+                corpus_training.append(self.model_corpus[i])
+
         score = []
         result_dict = dict()
         identifier = ''
@@ -259,17 +251,17 @@ class Genetic:
 
             result = (eta,alpha,num_topics,decay,offset)
             
-            model = LdaModel(corpus = prepared_data['model_corpus_is'], id2word = prepared_data['model_corpus_is'],
+            model = LdaModel(corpus = corpus_training, id2word = self.dictionary,
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
             result_dict[identifier] = result
 
-            fitness = self.fitenss(prepared_data['dictionary_o'], prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)
+            fitness = self.fitenss(self.dictionary, prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)
             score.append(fitness)
             counter_ident += 1
 
-        return result_dict, prepared_data, score
+        return result_dict, corpus_training, prepared_data, score
 
     def crossover_uniform(self, result_dict, no_of_cr, childSize, score):
         '''
@@ -339,7 +331,7 @@ class Genetic:
         """
         Run LDA over children and return the best
         """
-        result, prepared_data, score = self.train_population(generation)
+        result, corpus_training, prepared_data, score = self.train_population(generation)
         children_dict = self.crossover_uniform(result, self.no_of_cr, self.childSize, score)
         children = self.mutation(children_dict, self.prob_of_mutation, dictionary)
 
@@ -354,11 +346,11 @@ class Genetic:
 
             result = (eta,alpha,num_topics, decay, offset)
 
-            model = LdaModel(corpus = prepared_data['model_corpus_is'], id2word = prepared_data['model_corpus_is'],
+            model = LdaModel(corpus = corpus_training, id2word = self.dictionary,
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
-            output[self.fitenss(prepared_data['dictionary_o'], prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)] = result
+            output[self.fitenss(self.dictionary, prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)] = result
 
         return output, dictionary
 
