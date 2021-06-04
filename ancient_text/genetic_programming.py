@@ -353,7 +353,7 @@ class Genetic:
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
-            output[self.fitenss(self.dictionary, prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)] = result
+            output[self.fitenss(prepared_data['dictionary'], prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)] = result
 
         return output, prepared_data
 
