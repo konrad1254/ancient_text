@@ -352,7 +352,7 @@ class Genetic:
 
             output[self.fitenss(self.dictionary, prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)] = result
 
-        return output, dictionary
+        return output
 
     def fit(self):
         """
@@ -362,7 +362,7 @@ class Genetic:
         tracker_output = dict()
         for i in range(self.generations):
             print(f"Fitting generation: {i}")
-            output, dictionary = self.genetic_programming(i)
+            output = self.genetic_programming(i)
             
             return_values[max(output.items(), key=lambda x: x[0])[0]] = max(output.items(), key=lambda x: x[0])[1]
             tracker_output[i] = output
