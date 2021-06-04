@@ -118,7 +118,7 @@ class Genetic:
         return_dict['out_of_sample_keys'] = out_of_sample_keys
         return_dict['out_of_sample'] = out_of_sample
 
-        prirnt([type(i) for i in return_dict.values()])
+        print([type(i) for i in return_dict.values()])
 
         return return_dict
 
