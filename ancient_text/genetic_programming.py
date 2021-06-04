@@ -20,8 +20,12 @@ class Genetic:
         self.numberOfParents = numberOfParents
         self.model = None
         self.population = dict()
-        self.model_corpus = []
         
+        # Parameters
+        self.model_corpus = []
+        self.dictionary = None
+        
+
         # Hyperparameters to tune
         self.num_topics = np.empty([self.numberOfParents, 1])
         self.num_topic_min = num_topics_bounds[0]
@@ -101,21 +105,17 @@ class Genetic:
                     out_of_sample.append(self.data[k])
                 else:
                     in_sample.append(self.data[k])
-
-        elif isinstance(self.data, list):
-            cut_off = int(round(0.8*len(self.data)))
-            out_of_sample = text[cut_off:]
-            in_sample = text[:cut_off]
-            text = self.data
-
         else:
             raise NotImplementedError
 
+        # entire documents
         dictionary = Dictionary(text)
         dictionary.filter_extremes(no_below=3, no_above=0.7)
         ldacorpus = [dictionary.doc2bow(i) for i in text]
         tfidfmodel = TfidfModel(ldacorpus)
         model_corpus = tfidfmodel[ldacorpus]
+        self.model_corpus = model_corpus
+        self.dictionary = dictionary
 
         # In-sample
         dictionary_in_s = Dictionary(in_sample)
@@ -124,9 +124,13 @@ class Genetic:
         tfidfmodel_is = TfidfModel(ldacorpus_is)
         model_corpus_is = tfidfmodel_is[ldacorpus_is]
 
+        # Out of sample
+        dictionary_out_s = Dictionary(out_of_sample)
+
         return_dict['model_corpus'] = model_corpus
         return_dict['model_corpus_is'] = model_corpus_is
         return_dict['dictionary_is'] = dictionary_in_s
+        return_dict['dictionary_o'] = dictionary_out_s
         return_dict['dictionary'] = dictionary
         return_dict['in_sample'] = in_sample
         return_dict['out_of_sample'] = out_of_sample
@@ -255,17 +259,17 @@ class Genetic:
 
             result = (eta,alpha,num_topics,decay,offset)
             
-            model = LdaModel(corpus = prepared_data['model_corpus'], id2word = prepared_data['dictionary'],
+            model = LdaModel(corpus = prepared_data['model_corpus_is'], id2word = prepared_data['model_corpus_is'],
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
             result_dict[identifier] = result
 
-            fitness = self.fitenss(prepared_data['dictionary'], prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)
+            fitness = self.fitenss(prepared_data['dictionary_o'], prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)
             score.append(fitness)
             counter_ident += 1
 
-        return result_dict, prepared_data['model_corpus'],  prepared_data['dictionary'], prepared_data['out_of_sample'], score
+        return result_dict, prepared_data, score
 
     def crossover_uniform(self, result_dict, no_of_cr, childSize, score):
         '''
@@ -335,7 +339,7 @@ class Genetic:
         """
         Run LDA over children and return the best
         """
-        result, corpus_training, dictionary, out_of_sample, score = self.train_population(generation)
+        result, prepared_data, score = self.train_population(generation)
         children_dict = self.crossover_uniform(result, self.no_of_cr, self.childSize, score)
         children = self.mutation(children_dict, self.prob_of_mutation, dictionary)
 
@@ -350,11 +354,11 @@ class Genetic:
 
             result = (eta,alpha,num_topics, decay, offset)
 
-            model = LdaModel(corpus = corpus_training, id2word = dictionary,
+            model = LdaModel(corpus = prepared_data['model_corpus_is'], id2word = prepared_data['model_corpus_is'],
                             num_topics = num_topics, eta = eta, alpha = alpha, decay = decay, offset = offset,
                             iterations = 1000, random_state = 42)
 
-            output[self.fitenss(dictionary, out_of_sample, model, num_topics, eta, alpha, decay, offset)] = result
+            output[self.fitenss(prepared_data['dictionary_o'], prepared_data['out_of_sample'], model, num_topics, eta, alpha, decay, offset)] = result
 
         return output, dictionary
 
@@ -387,7 +391,7 @@ class Genetic:
         print(f'Parameters: offset: {offset}')
         print(f'Parameters: alpha: {alpha}')
 
-        model = LdaModel(corpus = self.model_corpus, id2word = dictionary,
+        model = LdaModel(corpus = self.model_corpus, id2word = self.dictionary,
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                          iterations = 1000, random_state = 42)
 
@@ -398,15 +402,12 @@ class Genetic:
         return prepared_data
 
     def lda_stability_test(self, num_topics, eta, alpha, decay, offset, random_state): 
-        prepared_data = self.data_prep()
 
-        model = LdaModel(corpus = prepared_data['model_corpus'], id2word = prepared_data['dictionary'], 
+        model = LdaModel(corpus = self.model_corpus, id2word = self.dictionary, 
                         num_topics = num_topics, alpha = alpha, eta = eta, decay = decay, offset = offset,
                         iterations=1000, random_state = random_state) 
         
-        topic_corpus = model[prepared_data['model_corpus']]
-
-        return model, topic_corpus
+        return model
 
 
 
