@@ -15,7 +15,7 @@ class Genetic:
     Class that produces genetic programming optimization for LDA
     """
 
-    def __init__(self, data,numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True):
+    def __init__(self, data, numberOfParents, generations, no_of_cr, childSize, prob_of_mutation, lambda_fitness, num_topics_bounds, alpha_choice, eta_optimize = True, online_opt = True):
         
 
         self.data = data
@@ -32,20 +32,25 @@ class Genetic:
         self.num_topic_max = num_topics_bounds[1]
 
         self.eta_optimize  = eta_optimize
+        self.online_opt = online_opt
         self.eta = np.array([0])
         
         self.alpha_choice  = alpha_choice
         self.alpha = list()
-        
-        self.decay = np.empty([self.numberOfParents, 1])
-        self.offset = np.empty([self.numberOfParents, 1])
-
-        # Hierarchical modelling: log-normal hyper-priors
+    
         if self.eta_optimize == True:
             self.sigma_eta = np.empty([self.numberOfParents, 1])
             self.mu_eta = np.empty([self.numberOfParents, 1])
         else:
             self.eta = None
+
+        if self.online_opt == True:
+            self.decay = np.empty([self.numberOfParents, 1])
+            self.offset = np.empty([self.numberOfParents, 1])
+        else:
+            self.decay = np.ones(self.numberOfParents)
+            self.offset = np.ones(self.numberOfParents)
+
 
         self.generations = generations
         self.no_of_cr = no_of_cr
@@ -66,9 +71,11 @@ class Genetic:
         for i in range(self.numberOfParents):
 
             self.num_topics = int(round(random.uniform(self.num_topic_min, self.num_topic_max)))
-            self.decay[i] = float(random.uniform(0.5, 1))
-            self.offset[i] = float(random.uniform(0, 2))
-            self.alpha.append(np.random.choice(self.alpha_choice, 1)) # allow for model choice 
+            self.alpha.append(np.random.choice(self.alpha_choice, 1)) 
+
+            if self.online_opt == True:
+                self.decay[i] = float(random.uniform(0.5, 1))
+                self.offset[i] = float(random.uniform(0, 2))
 
             if self.eta_optimize == True:
                 self.mu_eta[i] = float(random.uniform(0, 5))
@@ -202,13 +209,14 @@ class Genetic:
                 parameter_eta = np.random.lognormal(self.mu_eta[i], self.sigma_eta[i], num_of_words).T
                 self.eta[:,i] = np.random.dirichlet((parameter_eta), 1)
 
-            stochastic_pert_decay = np.random.normal(0,0.1,1)
-            if (self.decay[i] + stochastic_pert_decay > 0) and (self.decay[i] + stochastic_pert_decay < 0.99):
-                self.decay[i] = self.decay[i] + stochastic_pert_decay
+            if self.online_opt == True:
+                stochastic_pert_decay = np.random.normal(0,0.1,1)
+                if (self.decay[i] + stochastic_pert_decay > 0) and (self.decay[i] + stochastic_pert_decay < 0.99):
+                    self.decay[i] = self.decay[i] + stochastic_pert_decay
 
-            stochastic_pert_offset = np.random.normal(0,0.05,1)
-            if (self.offset[i] + stochastic_pert_offset > 0):
-                self.offset[i] = self.offset[i] + stochastic_pert_offset            
+                stochastic_pert_offset = np.random.normal(0,0.05,1)
+                if (self.offset[i] + stochastic_pert_offset > 0):
+                    self.offset[i] = self.offset[i] + stochastic_pert_offset            
 
         population['eta'] = self.eta
         population['num_topics'] = self.num_topics
