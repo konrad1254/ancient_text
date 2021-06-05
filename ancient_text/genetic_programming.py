@@ -325,12 +325,13 @@ class Genetic:
             #    val[1] = np.random.choice(self.alpha_choice, 1)
             
             # decay
-            if  prob_of_mutation > float(np.random.uniform(0,1,1)):
-                val[3] = float(random.uniform(0.5, 1))
+            if self.online_opt == True:
+                if  prob_of_mutation > float(np.random.uniform(0,1,1)):
+                    val[3] = float(random.uniform(0.5, 1))
 
-            # offset
-            if  prob_of_mutation > float(np.random.uniform(0,1,1)):
-                val[4] = float(random.uniform(0, 2))
+                # offset
+                if  prob_of_mutation > float(np.random.uniform(0,1,1)):
+                    val[4] = float(random.uniform(0, 2))
 
 
             return_dict[child] = val
