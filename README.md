@@ -89,17 +89,20 @@ genetic_algorithm = genetic_programming.Genetic(data = data,
                                                 lambda_fitness = 100, 
                                                 num_topics_bounds = (2,7), 
                                                 alpha_choice=['symmetric', None, 'asymmetric'], 
-                                                eta_optimize = False)
+                                                eta_optimize = True,
+                                                online_opt = False)
 
 model, return_dict, model_corpus, num_topics, tracker_output = genetic_algorithm.fit()
+model.print_topics(num_topics=num_topics, num_words=10)
 ```
 Arguments:
-- data: either list of tokens or dictionary with values of list of tokens
+- data: dictionary with keys as documents and values as 
 - numberOfParents / generations / no_of_cr / childSize / prob_of_mutation: genetic programming parameters
 - lambda_fitness: weight of stability factor
 - num_topics_bounds: (min,max) of number of topic bounds
 - alpha_choice: choices of alpha hyperparameter
-- eta_optimize: choice if eta should be optimized or not 
+- eta_optimize: choice if eta should be optimized or not
+- online_opt: choice if offset and decay should be optimized
 
 Output: most importantly model artifact
 
